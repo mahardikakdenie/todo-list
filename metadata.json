@@ -1,0 +1,6 @@
+{
+  "name": "TodoList React Query",
+  "description": "Professional Todo List with React Query and JSONPlaceholder static simulator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
