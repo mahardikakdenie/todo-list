@@ -142,6 +142,10 @@ export function useTodos() {
     }
   });
 
+  const reorderTodos = (newTodos: Todo[]) => {
+    queryClient.setQueryData<Todo[]>(['todos'], newTodos);
+  };
+
   return {
     todos: query.data,
     isLoading: query.isLoading,
@@ -150,5 +154,6 @@ export function useTodos() {
     toggleTodo,
     deleteTodo,
     updateTodoNotes,
+    reorderTodos,
   };
 }

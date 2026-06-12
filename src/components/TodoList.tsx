@@ -1,3 +1,20 @@
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import React, { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +25,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTodos } from '@/src/hooks/useTodos';
-import { Trash2, Plus, Loader2, ListTodo, CheckCircle2, Circle, Search, SearchX, Target, Trophy, Sparkles, ChevronDown, ChevronUp, AlignLeft } from 'lucide-react';
+import { Trash2, Plus, Loader2, ListTodo, CheckCircle2, Circle, Search, SearchX, Target, Trophy, Sparkles, ChevronDown, ChevronUp, AlignLeft, GripVertical } from 'lucide-react';
 import { Todo } from '@/src/types';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -19,6 +36,21 @@ function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: { todo: Tod
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState(todo.notes || '');
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: todo.id });
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    ...(isDragging ? { zIndex: 50, position: 'relative' as const, opacity: 0.8 } : {})
+  };
+
   const handleSaveNotes = () => {
     updateTodoNotes.mutate({ id: todo.id, notes: notesDraft });
     setIsEditingNotes(false);
@@ -26,6 +58,8 @@ function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: { todo: Tod
 
   return (
     <motion.li
+      ref={setNodeRef}
+      style={style}
       layout
       initial={{ opacity: 0, scale: 0.95, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -39,6 +73,9 @@ function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: { todo: Tod
     >
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex items-center flex-1 gap-4">
+          <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors">
+            <GripVertical className="w-5 h-5" />
+          </div>
           <Checkbox
             id={`todo-${todo.id}`}
             checked={todo.completed}
@@ -169,7 +206,32 @@ export function TodoList() {
   const [newTitle, setNewTitle] = useState('');
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const { todos, isLoading, isError, addTodo, toggleTodo, deleteTodo, updateTodoNotes } = useTodos();
+  const { todos, isLoading, isError, addTodo, toggleTodo, deleteTodo, updateTodoNotes, reorderTodos } = useTodos();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      if (todos) {
+        const activeIndex = todos.findIndex((t) => t.id === active.id);
+        const overIndex = todos.findIndex((t) => t.id === over.id);
+        
+        const newTodos = arrayMove(todos, activeIndex, overIndex);
+        reorderTodos(newTodos);
+      }
+    }
+  };
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -199,29 +261,48 @@ export function TodoList() {
 
   return (
     <div className="w-full max-w-3xl mx-auto space-y-8">
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-800 flex items-center gap-3">
-              <div className="bg-rose-100 p-2.5 rounded-xl shadow-sm border border-rose-200/50">
-                <ListTodo className="w-7 h-7 text-rose-500" />
-              </div>
-              Tasks Overview
-            </h1>
-            <p className="text-slate-500 pl-14">Manage your daily goals and track progress.</p>
-          </div>
-          <div className="text-right hidden sm:block">
-            <div className="text-3xl font-bold tracking-tighter text-slate-900">
-              {stats.progress}%
+      <div className="bg-white/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100/60 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="space-y-2 text-center sm:text-left flex-1 border-b sm:border-b-0 sm:border-r border-slate-200/50 pb-6 sm:pb-0 sm:pr-6">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-800 flex items-center justify-center sm:justify-start gap-3">
+            <div className="bg-rose-100 p-2.5 rounded-xl shadow-sm border border-rose-200/50">
+              <ListTodo className="w-7 h-7 text-rose-500" />
             </div>
-            <div className="text-sm font-medium text-slate-500 uppercase tracking-widest">
-              Completed
-            </div>
-          </div>
+            Tasks Overview
+          </h1>
+          <p className="text-slate-500 text-base">
+            You've completed <span className="font-semibold text-rose-600">{stats.completed}</span> out of <span className="font-semibold text-slate-700">{stats.total}</span> tasks
+          </p>
         </div>
         
-        <div className="pl-14 pr-4 sm:pr-0">
-          <Progress value={stats.progress} className="h-2 w-full bg-rose-100/50 [&>div]:bg-rose-500" />
+        <div className="flex items-center justify-center gap-6">
+          <div className="relative flex items-center justify-center w-28 h-28">
+            <svg className="transform -rotate-90 w-full h-full">
+              <circle
+                cx="56"
+                cy="56"
+                r="48"
+                stroke="currentColor"
+                strokeWidth="12"
+                fill="transparent"
+                className="text-rose-100/60"
+              />
+              <circle
+                cx="56"
+                cy="56"
+                r="48"
+                stroke="currentColor"
+                strokeWidth="12"
+                fill="transparent"
+                strokeDasharray={48 * 2 * Math.PI}
+                strokeDashoffset={48 * 2 * Math.PI - (stats.progress / 100) * (48 * 2 * Math.PI)}
+                strokeLinecap="round"
+                className="text-rose-500 transition-all duration-1000 ease-in-out"
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-2xl font-bold text-slate-800">{stats.progress}%</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -338,19 +419,30 @@ export function TodoList() {
                 </p>
               </motion.div>
             ) : (
-              <ul className="space-y-3">
-                <AnimatePresence mode="popLayout">
-                  {filteredTodos?.map((todo: Todo) => (
-                    <TodoItem 
-                      key={todo.id} 
-                      todo={todo} 
-                      toggleTodo={toggleTodo} 
-                      deleteTodo={deleteTodo} 
-                      updateTodoNotes={updateTodoNotes} 
-                    />
-                  ))}
-                </AnimatePresence>
-              </ul>
+              <DndContext 
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext 
+                  items={filteredTodos?.map(t => t.id) || []}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <ul className="space-y-3">
+                    <AnimatePresence mode="popLayout">
+                      {filteredTodos?.map((todo: Todo) => (
+                        <TodoItem 
+                          key={todo.id} 
+                          todo={todo} 
+                          toggleTodo={toggleTodo} 
+                          deleteTodo={deleteTodo} 
+                          updateTodoNotes={updateTodoNotes} 
+                        />
+                      ))}
+                    </AnimatePresence>
+                  </ul>
+                </SortableContext>
+              </DndContext>
             )}
           </div>
         </CardContent>
