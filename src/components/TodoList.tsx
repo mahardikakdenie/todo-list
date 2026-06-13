@@ -1,3 +1,5 @@
+"use client"
+
 import {
   DndContext,
   closestCenter,
@@ -318,11 +320,13 @@ export function TodoList() {
               onChange={(e) => setNewTitle(e.target.value)}
               className="flex-1 h-12 text-base shadow-sm transition-all focus-visible:ring-rose-400 bg-white"
               disabled={addTodo.isPending}
+              aria-label="New task title"
             />
             <Button
               type="submit"
               disabled={!newTitle.trim() || addTodo.isPending}
               className="h-12 px-6 sm:px-8 transition-all active:scale-95 shadow-sm bg-rose-600 hover:bg-rose-700 text-white"
+              aria-label="Add new task"
             >
               {addTodo.isPending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -337,7 +341,7 @@ export function TodoList() {
         <CardContent className="p-0">
           <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 border-b border-slate-100 bg-white/40 gap-4">
             <Tabs value={filter} onValueChange={(v) => setFilter(v as any)} className="w-full sm:w-auto">
-              <TabsList className="grid w-full grid-cols-3 bg-rose-50/80 p-1 rounded-xl">
+              <TabsList className="grid w-full grid-cols-3 bg-rose-50/80 p-1 rounded-xl" aria-label="Filter tasks">
                 <TabsTrigger value="all" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-sm">All</TabsTrigger>
                 <TabsTrigger value="pending" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-amber-600 data-[state=active]:shadow-sm">Pending</TabsTrigger>
                 <TabsTrigger value="completed" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-emerald-600 data-[state=active]:shadow-sm">Completed</TabsTrigger>
@@ -353,6 +357,7 @@ export function TodoList() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9 h-10 bg-white"
+                  aria-label="Search tasks"
                 />
               </div>
             </div>

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, YAxis } from 'recharts';

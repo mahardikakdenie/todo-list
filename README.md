@@ -1,50 +1,61 @@
 # Task Management App (To-Do List)
 
-Aplikasi To-Do List sederhana yang dibangun menggunakan React (Vite) dan TypeScript. Proyek ini dikembangkan untuk memenuhi kualifikasi Technical Test posisi Front End Developer.
+A professional To-Do List application built with **Next.js 15 (App Router)** and **TypeScript**. This project was developed as part of a Technical Test for a Front End Developer position, adhering to modern industry standards and best practices.
 
-## Fitur (Features)
-- [x] Menampilkan daftar task
-- [x] Menambahkan task baru
-- [x] Mengubah status task (Done / Undone)
-- [x] Menghapus task
-- [x] Filter task (All / Pending / Completed)
-- [x] Form validation (mencegah form submission kosong)
-- [x] Responsiveness (Mobile First & Tablet/Desktop optimal)
-- [x] Search (Pencarian nama task)
-- [x] Summary Dashboard (Statistik task)
-- [x] LocalStorage Sync (Menyimpan task persisten tanpa database asli)
+## Features
+- [x] **Next.js App Router**: Utilizes the latest Next.js architecture for optimized performance and improved developer experience.
+- [x] **Task Management**: Full CRUD capabilities (Create, Read, Update, Delete) for tasks.
+- [x] **Task Status**: Easily toggle tasks between 'Pending' and 'Completed'.
+- [x] **Drag & Drop**: Reorder tasks intuitively using `@dnd-kit`.
+- [x] **Filter & Search**: Quickly find tasks with real-time search and status-based filtering (All/Pending/Completed).
+- [x] **Summary Dashboard**: Data visualization of task statistics using **Recharts**.
+- [x] **Form Validation**: Robust validation to prevent empty submissions with clear visual feedback.
+- [x] **Unit Testing**: Comprehensive component testing using **Vitest** and **React Testing Library**.
+- [x] **LocalStorage Sync**: Persistent data storage using browser LocalStorage to maintain state across sessions.
+- [x] **Responsive Design**: Fully optimized for Mobile, Tablet, and Desktop views.
 
-## Tech Stack Target
-* **Framework:** React 18 + Vite
+## Tech Stack
+* **Framework:** Next.js 15 (App Router)
 * **Language:** TypeScript
 * **Styling:** Tailwind CSS + shadcn/ui
-* **Data Fetching / State Management:** TanStack React Query
+* **State Management:** TanStack React Query v5
 * **Animation:** Motion (Framer Motion)
+* **Testing:** Vitest + React Testing Library
 * **Icons:** Lucide React
 * **Charts:** Recharts
 
-## Cara Menjalankan Project
-Karena project ini dibangun dengan ekosistem Node.js + Vite, pastikan Anda telah menginstal [Node.js](https://nodejs.org/) di perangkat Anda.
+## Getting Started
 
-1. Clone repository ini ke perangkat lokal Anda.
-2. Buka terminal pada folder proyek.
-3. Jalankan `npm install` untuk mengunduh semua dependencies.
-4. Jalankan `npm run dev` untuk memulai development server.
-5. Buka web browser dan akses URL / localhost port yang muncul pada terminal (biasanya `http://localhost:3000` atau `http://localhost:5173`).
+Follow these steps to run the project locally:
 
-## Daftar Endpoint (API URLs)
-Aplikasi ini menggunakan mock API dari [JSONPlaceholder](https://jsonplaceholder.typicode.com/) untuk mengambil seed data. Mengingat JSONPlaceholder tidak benar-benar menyimpan operasi modifikasi state, status state tersebut dijembatani dengan `localStorage` browser agar simulasi Create, Update, dan Delete dapat berjalan seolah-olah data berubah secara remote.
+1. **Clone the repository** to your local machine.
+2. **Open the terminal** in the project root directory.
+3. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+4. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+5. **Open your browser** and navigate to `http://localhost:3000`.
 
-* **GET** `https://jsonplaceholder.typicode.com/todos?_limit=6` (Mengambil 6 task awalan)
-* **POST** `https://jsonplaceholder.typicode.com/todos` (Hit simulasi API tambah data)
-* **PATCH** `https://jsonplaceholder.typicode.com/todos/:id` (Hit simulasi update task selesai/batal)
-* **DELETE** `https://jsonplaceholder.typicode.com/todos/:id` (Hit simulasi API hapus data)
+### Running Tests
+To execute the unit testing suite, run:
+```bash
+npm run test
+```
 
-## Penjelasan Arsitektur Singkat
-Aplikasi ini dirancang menggunakan arsitektur berbasis komponen yang modular:
-1. **`/src/components`**: Menyimpan file UI Component mandiri seperti `TodoList.tsx` dan `SummaryDashboard.tsx`. Tersedia pula folder `ui` untuk menyimpan base component design system (shadcn/ui).
-2. **`/src/hooks`**: Berisi Custom Hooks, utamanya `useTodos.ts`. Hook ini bertindak sebagai jembatan *Business Logic* yang merangkum *Data Fetching* (Tanstack React Query) di dalamnya. Pendekatan ini memastikan decoupling antara UI Components UI dan proses API Requests.
-3. **`/src/types.ts`**: Repositori deklarasi tipe statis (Interface Type) TypeScript agar integritas data konsisten (*Type-safe*) dari API sampai Component Rendering.
-4. **State Management System**: Aplikasi mengimplementasikan dua lapis state. 
-   - *Client State (Local)*: `useState` & `useMemo` bawaan React untuk state ringan dan kalkulasi yang tidak perlu dikirim ke server seperti Filter active/completed, Search Input, dan animasi UI.
-   - *Server State*: Dihandle eksklusif oleh *React Query* untuk operasi asinkronous. React query secara proaktif memantau status `isPending`, `isError`, mendelegasi *caching*, dan menjaga sinkronisasi UI-dengan optimistik ketika melakukan mutasi API.
+## API Endpoints
+The application consumes mock data from [JSONPlaceholder](https://jsonplaceholder.typicode.com/):
+* **GET** `/todos?_limit=6`: Fetch initial task data.
+* **POST** `/todos`: Simulate adding a new task.
+* **PATCH** `/todos/:id`: Simulate updating task status or notes.
+* **DELETE** `/todos/:id`: Simulate removing a task.
+
+## Architecture & Best Practices
+1. **App Router Paradigm**: Structured directory using `src/app` for clean layouting and routing logic.
+2. **Decoupled Business Logic**: Core logic is encapsulated within the `useTodos.ts` custom hook, ensuring a clear separation of concerns between UI and state management.
+3. **Client vs Server Components**: Strategic use of `"use client"` directives to optimize bundle size while maintaining interactivity.
+4. **Server State Management**: Utilizes TanStack React Query for efficient caching, handling asynchronous loading states, and implementing optimistic updates.
+5. **Strict Type Safety**: Comprehensive TypeScript implementation to ensure data integrity and minimize runtime errors across the application.
