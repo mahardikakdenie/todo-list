@@ -73,34 +73,34 @@ function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: TodoItemPro
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, filter: "blur(4px)" }}
       transition={{ type: "spring", stiffness: 400, damping: 30, mass: 0.8 }}
-      className={`group flex flex-col p-4 sm:p-5 border rounded-2xl hover:shadow-md transition-all duration-300 overflow-hidden ${
+      className={`group flex flex-col p-3 sm:p-5 border rounded-2xl hover:shadow-md transition-all duration-300 overflow-hidden ${
         todo.completed 
           ? 'bg-slate-50/50 border-slate-200/60' 
           : 'bg-white border-slate-200 hover:border-rose-300'
       }`}
     >
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <div className="flex items-center flex-1 gap-4">
-          <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors">
-            <GripVertical className="w-5 h-5" />
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+        <div className="flex items-center flex-1 gap-3 sm:gap-4">
+          <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors p-1">
+            <GripVertical className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <Checkbox
             id={`todo-${todo.id}`}
             checked={todo.completed}
             onCheckedChange={() => toggleTodo.mutate(todo)}
-            className={`w-6 h-6 rounded-full mt-0.5 sm:mt-0 transition-all active:scale-75 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 ${!todo.completed && 'border-slate-300'}`}
+            className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full transition-all active:scale-75 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 ${!todo.completed && 'border-slate-300'}`}
           />
-          <div className="flex flex-col flex-1 gap-1">
+          <div className="flex flex-col flex-1 min-w-0 gap-0.5 sm:gap-1">
             <label
               htmlFor={`todo-${todo.id}`}
-              className={`text-base font-medium leading-tight transition-all cursor-pointer ${
+              className={`text-sm sm:text-base font-medium leading-tight transition-all cursor-pointer break-words ${
                 todo.completed ? 'text-slate-400 line-through' : 'text-slate-800'
               }`}
             >
               {todo.title}
             </label>
-            <div className="flex items-center gap-2 mt-0.5 mt-1 sm:mt-0">
-              <span className={`text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full ${
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className={`text-[10px] sm:text-[11px] font-medium uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded-full ${
                 todo.completed 
                   ? 'bg-emerald-100/50 text-emerald-600' 
                   : 'bg-blue-100/50 text-blue-600'
@@ -108,8 +108,8 @@ function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: TodoItemPro
                 {todo.completed ? 'Completed' : 'In Progress'}
               </span>
               {(todo.notes || isExpanded) && (
-                <span className="flex items-center gap-1 text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                  <AlignLeft className="w-3 h-3" />
+                <span className="flex items-center gap-1 text-[10px] sm:text-[11px] text-slate-500 bg-slate-100 px-1.5 sm:px-2 py-0.5 rounded-full">
+                  <AlignLeft className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   Notes
                 </span>
               )}
@@ -117,24 +117,24 @@ function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: TodoItemPro
           </div>
         </div>
         
-        <div className="flex items-center gap-2 self-end sm:self-auto ml-[3.25rem] sm:ml-0 mt-2 sm:mt-0">
+        <div className="flex items-center gap-1 sm:gap-2 self-end sm:self-auto ml-10 sm:ml-0">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsExpanded(!isExpanded)}
-            className={`text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all rounded-xl h-10 w-10 ${isExpanded ? 'bg-rose-50 text-rose-600' : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100'}`}
+            className={`text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all rounded-xl h-9 w-9 sm:h-10 sm:w-10 ${isExpanded ? 'bg-rose-50 text-rose-600' : 'sm:opacity-0 group-hover:opacity-100 focus-visible:opacity-100'}`}
             title={isExpanded ? "Hide notes" : "Show notes"}
           >
-            {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            {isExpanded ? <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5" /> : <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />}
           </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => deleteTodo.mutate(todo.id)}
             disabled={deleteTodo.isPending}
-            className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all rounded-xl h-10 w-10"
+            className="sm:opacity-0 group-hover:opacity-100 focus-visible:opacity-100 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all rounded-xl h-9 w-9 sm:h-10 sm:w-10"
           >
-            <Trash2 className="w-5 h-5" />
+            <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
             <span className="sr-only">Delete</span>
           </Button>
         </div>
@@ -148,7 +148,7 @@ function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: TodoItemPro
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="pt-4 mt-4 border-t border-slate-100/60 ml-[3.25rem]">
+            <div className="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-slate-100/60 ml-10 sm:ml-[3.25rem]">
               {isEditingNotes ? (
                 <div className="space-y-3">
                   <Textarea
@@ -182,13 +182,13 @@ function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: TodoItemPro
                   </div>
                 </div>
               ) : (
-                <div className="group/notes relative rounded-lg p-3 -mx-3 hover:bg-slate-50/80 transition-colors">
+                <div className="group/notes relative rounded-lg p-2 sm:p-3 -mx-2 sm:-mx-3 hover:bg-slate-50/80 transition-colors">
                   {todo.notes ? (
-                    <div className="text-sm text-slate-600 whitespace-pre-wrap leading-relaxed">
+                    <div className="text-xs sm:text-sm text-slate-600 whitespace-pre-wrap leading-relaxed">
                       {todo.notes}
                     </div>
                   ) : (
-                    <div className="text-sm text-slate-400 italic">
+                    <div className="text-xs sm:text-sm text-slate-400 italic">
                       No notes added yet.
                     </div>
                   )}
@@ -196,7 +196,7 @@ function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: TodoItemPro
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsEditingNotes(true)}
-                    className="absolute top-2 right-2 opacity-0 group-hover/notes:opacity-100 h-7 px-3 text-xs bg-white/80 backdrop-blur border shadow-sm hover:bg-rose-50 hover:text-rose-600 transition-all font-medium"
+                    className="absolute top-1 sm:top-2 right-1 sm:right-2 sm:opacity-0 group-hover/notes:opacity-100 h-7 px-2 sm:px-3 text-[10px] sm:text-xs bg-white/80 backdrop-blur border shadow-sm hover:bg-rose-50 hover:text-rose-600 transition-all font-medium"
                   >
                     Edit
                   </Button>
@@ -267,23 +267,23 @@ export function TodoList() {
   }, [filteredTodos]);
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-8">
-      <div className="bg-white/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100/60 flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div className="space-y-2 text-center sm:text-left flex-1 border-b sm:border-b-0 sm:border-r border-slate-200/50 pb-6 sm:pb-0 sm:pr-6">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-800 flex items-center justify-center sm:justify-start gap-3">
-            <div className="bg-rose-100 p-2.5 rounded-xl shadow-sm border border-rose-200/50">
-              <ListTodo className="w-7 h-7 text-rose-500" />
+    <div className="w-full max-w-3xl mx-auto space-y-6 sm:space-y-8">
+      <div className="bg-white/60 backdrop-blur-md rounded-2xl p-5 sm:p-8 shadow-sm border border-slate-100/60 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="space-y-2 text-center sm:text-left flex-1 border-b sm:border-b-0 sm:border-r border-slate-200/50 pb-5 sm:pb-0 sm:pr-6 w-full sm:w-auto">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800 flex items-center justify-center sm:justify-start gap-3">
+            <div className="bg-rose-100 p-2 sm:p-2.5 rounded-xl shadow-sm border border-rose-200/50">
+              <ListTodo className="w-6 h-6 sm:w-7 sm:h-7 text-rose-500" />
             </div>
             Tasks Overview
           </h1>
-          <p className="text-slate-500 text-base">
+          <p className="text-slate-500 text-sm sm:text-base">
             You&apos;ve completed <span className="font-semibold text-rose-600">{stats.completed}</span> out of <span className="font-semibold text-slate-700">{stats.total}</span> tasks
           </p>
         </div>
         
         <div className="flex items-center justify-center gap-6">
-          <div className="relative flex items-center justify-center w-28 h-28">
-            <svg className="transform -rotate-90 w-full h-full">
+          <div className="relative flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28">
+            <svg className="transform -rotate-90 w-full h-full" viewBox="0 0 112 112">
               <circle
                 cx="56"
                 cy="56"
@@ -307,7 +307,7 @@ export function TodoList() {
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-2xl font-bold text-slate-800">{stats.progress}%</span>
+              <span className="text-xl sm:text-2xl font-bold text-slate-800">{stats.progress}%</span>
             </div>
           </div>
         </div>
@@ -317,20 +317,20 @@ export function TodoList() {
 
       <Card className="border-none shadow-xl bg-white/60 backdrop-blur-xl ring-1 ring-slate-900/5 overflow-hidden">
         <div className="bg-slate-50/50 border-b border-slate-100 p-4 sm:p-6">
-          <form onSubmit={handleAdd} className="flex gap-3">
+          <form onSubmit={handleAdd} className="flex gap-2 sm:gap-3">
             <Input
               type="text"
-              placeholder="What do you need to get done?"
+              placeholder="What to do?"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              className="flex-1 h-12 text-base shadow-sm transition-all focus-visible:ring-rose-400 bg-white"
+              className="flex-1 h-11 sm:h-12 text-sm sm:text-base shadow-sm transition-all focus-visible:ring-rose-400 bg-white"
               disabled={addTodo.isPending}
               aria-label="New task title"
             />
             <Button
               type="submit"
               disabled={!newTitle.trim() || addTodo.isPending}
-              className="h-12 px-6 sm:px-8 transition-all active:scale-95 shadow-sm bg-rose-600 hover:bg-rose-700 text-white"
+              className="h-11 sm:h-12 px-4 sm:px-8 transition-all active:scale-95 shadow-sm bg-rose-600 hover:bg-rose-700 text-white"
               aria-label="Add new task"
             >
               {addTodo.isPending ? (
@@ -344,31 +344,31 @@ export function TodoList() {
         </div>
 
         <CardContent className="p-0">
-          <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 border-b border-slate-100 bg-white/40 gap-4">
-            <Tabs value={filter} onValueChange={(v) => setFilter(v as 'all' | 'pending' | 'completed')} className="w-full sm:w-auto">
+          <div className="flex flex-col lg:flex-row items-center justify-between p-4 sm:p-6 border-b border-slate-100 bg-white/40 gap-4">
+            <Tabs value={filter} onValueChange={(v) => setFilter(v as 'all' | 'pending' | 'completed')} className="w-full lg:w-auto">
               <TabsList className="grid w-full grid-cols-3 bg-rose-50/80 p-1 rounded-xl" aria-label="Filter tasks">
-                <TabsTrigger value="all" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-sm">All</TabsTrigger>
-                <TabsTrigger value="pending" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-amber-600 data-[state=active]:shadow-sm">Pending</TabsTrigger>
-                <TabsTrigger value="completed" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-emerald-600 data-[state=active]:shadow-sm">Completed</TabsTrigger>
+                <TabsTrigger value="all" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-sm text-xs sm:text-sm">All</TabsTrigger>
+                <TabsTrigger value="pending" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-amber-600 data-[state=active]:shadow-sm text-xs sm:text-sm">Pending</TabsTrigger>
+                <TabsTrigger value="completed" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-emerald-600 data-[state=active]:shadow-sm text-xs sm:text-sm">Done</TabsTrigger>
               </TabsList>
             </Tabs>
             
-            <div className="flex w-full sm:w-auto items-center gap-3">
-              <div className="relative flex-1 sm:w-64">
+            <div className="flex w-full lg:w-auto items-center gap-3">
+              <div className="relative flex-1 lg:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
                   type="text"
                   placeholder="Search tasks..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 h-10 bg-white"
+                  className="pl-9 h-10 bg-white text-sm"
                   aria-label="Search tasks"
                 />
               </div>
             </div>
           </div>
 
-          <div className="p-4 sm:p-6 bg-white min-h-[400px]">
+          <div className="p-3 sm:p-6 bg-white min-h-[300px] sm:min-h-[400px]">
              {isLoading ? (
               <div className="flex flex-col items-center justify-center py-24 text-slate-500">
                 <Loader2 className="w-10 h-10 animate-spin mb-4 text-rose-400" />

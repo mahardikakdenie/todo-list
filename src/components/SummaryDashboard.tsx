@@ -31,46 +31,46 @@ export function SummaryDashboard({ todos }: SummaryDashboardProps) {
   }, [stats]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
       <Card className="border-none shadow-sm bg-white/60 backdrop-blur-md">
-        <CardContent className="p-4 flex items-center gap-4">
-          <div className="bg-amber-100 p-3 rounded-xl text-amber-600">
-            <ListTodo className="w-6 h-6" />
+        <CardContent className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+          <div className="bg-amber-100 p-2.5 sm:p-3 rounded-xl text-amber-600">
+            <ListTodo className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500">Total Tasks Added</p>
-            <h3 className="text-2xl font-bold text-slate-800">{stats.total}</h3>
+            <p className="text-[11px] sm:text-sm font-medium text-slate-500 uppercase tracking-wider">Total Tasks</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-800">{stats.total}</h3>
           </div>
         </CardContent>
       </Card>
       
       <Card className="border-none shadow-sm bg-white/60 backdrop-blur-md">
-        <CardContent className="p-4 flex items-center gap-4">
-          <div className="bg-rose-100 p-3 rounded-xl text-rose-600">
-            <Timer className="w-6 h-6" />
+        <CardContent className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+          <div className="bg-rose-100 p-2.5 sm:p-3 rounded-xl text-rose-600">
+            <Timer className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500">Avg. Completion Time</p>
-            <h3 className="text-2xl font-bold text-slate-800">2.4 hrs</h3>
+            <p className="text-[11px] sm:text-sm font-medium text-slate-500 uppercase tracking-wider">Avg. Time</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-800">2.4 hrs</h3>
           </div>
         </CardContent>
       </Card>
       
-      <Card className="border-none shadow-sm bg-white/60 backdrop-blur-md md:col-span-1">
-        <CardContent className="p-4 flex flex-col justify-center h-full gap-2">
+      <Card className="border-none shadow-sm bg-white/60 backdrop-blur-md sm:col-span-2 lg:col-span-1">
+        <CardContent className="p-3 sm:p-4 flex flex-col justify-center h-full gap-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-slate-500">Weekly Activity</p>
-            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+            <p className="text-[11px] sm:text-sm font-medium text-slate-500 uppercase tracking-wider">Weekly Activity</p>
+            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500" />
           </div>
-          <div className="h-[48px] w-full mt-auto">
+          <div className="h-[40px] sm:h-[48px] w-full mt-auto">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data}>
                 <Tooltip 
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontSize: '10px' }}
                   cursor={{ fill: 'transparent' }}
                 />
-                <Bar dataKey="added" fill="#e2e8f0" radius={[2, 2, 2, 2]} barSize={6} />
-                <Bar dataKey="completed" fill="#f43f5e" radius={[2, 2, 2, 2]} barSize={6} />
+                <Bar dataKey="added" fill="#e2e8f0" radius={[2, 2, 2, 2]} barSize={4} />
+                <Bar dataKey="completed" fill="#f43f5e" radius={[2, 2, 2, 2]} barSize={4} />
               </BarChart>
             </ResponsiveContainer>
           </div>
