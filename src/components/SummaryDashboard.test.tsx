@@ -5,8 +5,8 @@ import { describe, it, expect, vi } from 'vitest';
 
 // Mock Recharts since it doesn't render well in jsdom
 vi.mock('recharts', () => ({
-  ResponsiveContainer: ({ children }: any) => <div>{children}</div>,
-  BarChart: ({ children }: any) => <div>{children}</div>,
+  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  BarChart: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Bar: () => <div />,
   XAxis: () => <div />,
   YAxis: () => <div />,

@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, YAxis } from 'recharts';
+import { BarChart, Bar, Tooltip, ResponsiveContainer } from 'recharts';
 import { Todo } from '@/src/types';
 import { CheckCircle2, ListTodo, Timer } from 'lucide-react';
 

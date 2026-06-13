@@ -1,7 +1,9 @@
+import { UseMutationResult } from '@tanstack/react-query';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { TodoList } from './TodoList';
 import { useTodos } from '@/src/hooks/useTodos';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
+import { Todo } from '../types';
 
 // Mock the custom hook
 vi.mock('@/src/hooks/useTodos', () => ({
@@ -11,10 +13,10 @@ vi.mock('@/src/hooks/useTodos', () => ({
 // Mock framer-motion to avoid animation issues in tests
 vi.mock('motion/react', () => ({
   motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    li: ({ children, ...props }: any) => <li {...props}>{children}</li>,
+    div: ({ children, ...props }: { children: React.ReactNode }) => <div {...props}>{children}</div>,
+    li: ({ children, ...props }: { children: React.ReactNode }) => <li {...props}>{children}</li>,
   },
-  AnimatePresence: ({ children }: any) => <>{children}</>,
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
 // Mock SummaryDashboard since it's tested separately
@@ -23,18 +25,18 @@ vi.mock('./SummaryDashboard', () => ({
 }));
 
 describe('TodoList Component', () => {
-  const mockTodos = [
+  const mockTodos: Todo[] = [
     { id: 1, title: 'Learn Vitest', completed: false, userId: 1 },
     { id: 2, title: 'Build Next.js App', completed: true, userId: 1 },
   ];
 
-  const mockAddTodo = { mutate: vi.fn(), isPending: false };
-  const mockToggleTodo = { mutate: vi.fn() };
-  const mockDeleteTodo = { mutate: vi.fn() };
+  const mockAddTodo = { mutate: vi.fn(), isPending: false } as unknown as UseMutationResult<Todo, Error, string, unknown>;
+  const mockToggleTodo = { mutate: vi.fn() } as unknown as UseMutationResult<Todo, Error, Todo, unknown>;
+  const mockDeleteTodo = { mutate: vi.fn() } as unknown as UseMutationResult<number, Error, number, unknown>;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useTodos as any).mockReturnValue({
+    (useTodos as Mock).mockReturnValue({
       todos: mockTodos,
       isLoading: false,
       isError: false,

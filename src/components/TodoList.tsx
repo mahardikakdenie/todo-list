@@ -1,5 +1,6 @@
 "use client"
 
+import { UseMutationResult } from '@tanstack/react-query';
 import {
   DndContext,
   closestCenter,
@@ -18,22 +19,27 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import React, { useState, useMemo } from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTodos } from '@/src/hooks/useTodos';
-import { Trash2, Plus, Loader2, ListTodo, CheckCircle2, Circle, Search, SearchX, Target, Trophy, Sparkles, ChevronDown, ChevronUp, AlignLeft, GripVertical } from 'lucide-react';
+import { Trash2, Plus, Loader2, ListTodo, Search, SearchX, Target, Trophy, Sparkles, ChevronDown, ChevronUp, AlignLeft, GripVertical } from 'lucide-react';
 import { Todo } from '@/src/types';
 import { motion, AnimatePresence } from 'motion/react';
 
 import { SummaryDashboard } from './SummaryDashboard';
 
-function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: { todo: Todo, toggleTodo: any, deleteTodo: any, updateTodoNotes: any }) {
+interface TodoItemProps {
+  todo: Todo;
+  toggleTodo: UseMutationResult<Todo, Error, Todo, unknown>;
+  deleteTodo: UseMutationResult<number, Error, number, unknown>;
+  updateTodoNotes: UseMutationResult<{ id: number; notes: string }, Error, { id: number; notes: string }, unknown>;
+}
+
+function TodoItem({ todo, toggleTodo, deleteTodo, updateTodoNotes }: TodoItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState(todo.notes || '');
@@ -256,9 +262,8 @@ export function TodoList() {
   const stats = useMemo(() => {
     const total = filteredTodos?.length || 0;
     const completed = filteredTodos?.filter((t) => t.completed).length || 0;
-    const active = total - completed;
     const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
-    return { total, completed, active, progress };
+    return { total, completed, progress };
   }, [filteredTodos]);
 
   return (
@@ -272,7 +277,7 @@ export function TodoList() {
             Tasks Overview
           </h1>
           <p className="text-slate-500 text-base">
-            You've completed <span className="font-semibold text-rose-600">{stats.completed}</span> out of <span className="font-semibold text-slate-700">{stats.total}</span> tasks
+            You&apos;ve completed <span className="font-semibold text-rose-600">{stats.completed}</span> out of <span className="font-semibold text-slate-700">{stats.total}</span> tasks
           </p>
         </div>
         
@@ -340,7 +345,7 @@ export function TodoList() {
 
         <CardContent className="p-0">
           <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 border-b border-slate-100 bg-white/40 gap-4">
-            <Tabs value={filter} onValueChange={(v) => setFilter(v as any)} className="w-full sm:w-auto">
+            <Tabs value={filter} onValueChange={(v) => setFilter(v as 'all' | 'pending' | 'completed')} className="w-full sm:w-auto">
               <TabsList className="grid w-full grid-cols-3 bg-rose-50/80 p-1 rounded-xl" aria-label="Filter tasks">
                 <TabsTrigger value="all" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-rose-600 data-[state=active]:shadow-sm">All</TabsTrigger>
                 <TabsTrigger value="pending" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-amber-600 data-[state=active]:shadow-sm">Pending</TabsTrigger>
